@@ -9,6 +9,7 @@
 #include <Arduino.h>
 
 typedef struct envSensorData{
+	uint32_t time;
 	float dsTemp,
 		  msPressure,
 		  msTemperature,
@@ -22,6 +23,8 @@ typedef struct envSensorData{
 } envSensorData;
 
 envSensorData get_envData_stamp();
+
+String get_sensorMsg();
 
 void envSensors_init();
 void envSensorsUpdate(envSensorData &data);

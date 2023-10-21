@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-//#include "modules/ota.h"
+#include "modules/ota.h"
 #include "modules/settings.h"
 #include "modules/buoyancy.h"
 #include "modules/wifi_mqtt.h"
@@ -9,7 +9,7 @@
 #define OTA_DISABLED false;
 #define OTA_ENABLED true;
 
-bool ota_state = OTA_DISABLED;
+bool ota_state = OTA_ENABLED;
 
 
 void print_sensorData(String msg){
@@ -27,24 +27,31 @@ void send_msg(String msg){
     }
 }
 
-void sensor_update(){
-    envSensorData dataStamp = get_envData_stamp();
-    envSensorsUpdate(dataStamp);
+void update_sensorData(){
+  envSensorData dataStamp = get_envData_stamp();
+  envSensorsUpdate(dataStamp);
+  
+  if (get_mqttMode() == MQTT_IS_ON){
     String msg = dataframe_csvData_toString(dataStamp);
     send_msg(msg);
+  }
+  else{
 
+  }
+  /*
     #ifdef ___DEBUG___
       msg = envSensorData_toString(dataStamp);
       DPRINTLN(msg);
     #endif
+  */
 }
 
 
 void setup() {
   Serial.begin(SERIAL_SPEED);
-  
+  //Serial.println(sizeof(envSensorData));
   setup_wifi();
-  //ota_init();
+  ota_init();
   mqtt_reconnect();
   
   enders_init();
@@ -61,18 +68,16 @@ void loop() {
     mqtt_routine();
   }
   
-  /*
   if (ota_state){
     ota_tick();
   }
-  */
   
 
   static uint32_t envSensorLasttime = millis();
   uint32_t now = millis();
 
   if (fabs(now - envSensorLasttime) >= ENV_SENSORS_TASK_PERIOD_MS) {
-    sensor_update();
+    update_sensorData();
     envSensorLasttime = millis();
   }
 }

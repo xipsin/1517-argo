@@ -132,3 +132,8 @@ String dataframe_csvData_toString(envSensorData &data){
   return msg;
 }
 
+String get_sensorMsg(){
+  envSensorData dataStamp = get_envData_stamp();
+  envSensorsUpdate(dataStamp);
+  return dataframe_csvData_toString(dataStamp);
+}
