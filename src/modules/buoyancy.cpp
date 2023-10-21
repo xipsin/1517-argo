@@ -1,15 +1,12 @@
 #include <ESP32Servo.h>
 
+#include "settings.h"
 #include "buoyancy.h"
 
 
-#define CON_UP_PIN 23  // точно вверх
-#define CON_DOWN_PIN 36  // точно вниз
-#define BUOYANCY_SERVO_PIN 18
-
-#define DOWN 180
+#define DOWN 0
 #define STOP 90
-#define UP 0
+#define UP   180
 
 Servo buoyancyServo;
 
@@ -19,33 +16,47 @@ void enders_init(){
 }
 
 bool check_conUpEnder(){
- return digitalRead(CON_UP_PIN);
-  Serial.print("                              CON_UP_PIN: ");
- Serial.println(digitalRead(CON_UP_PIN));
+  //DPRINT(".");
+  bool upEnder = digitalRead(CON_UP_PIN);
+  DPRINT(upEnder);
+  return upEnder;
 }
 
 bool check_conDownEnder(){
- return digitalRead(CON_DOWN_PIN);
- Serial.print("                                CON_DOWN_PIN: ");
- Serial.println(digitalRead(CON_DOWN_PIN));
+  //DPRINT(".");
+  bool downEnder = digitalRead(CON_DOWN_PIN);
+  DPRINTLN(downEnder);
+  return downEnder;
 }
 
 void buoyancyServo_init(){
  buoyancyServo.attach(BUOYANCY_SERVO_PIN, 544, 2400);
 }
 
+void buoyancyServo_detach(){
+ buoyancyServo.detach();
+}  
+
 void buoyancyServo_dive(){
- buoyancyServo.write(UP);
- while (!check_conUpEnder())
- {
- delay(2000);
- buoyancyServo.write(STOP);
- }
+  DPRINT("BuoyancyServo diving start!");
+  buoyancyServo.write(UP);
+  DPRINT("Waiting for up ender....");
+  while (!check_conUpEnder()){
+    //DPRINT("Waiting for up ender....");
+  }
+  DPRINT("Up Ender was clicked!");
+  buoyancyServo.write(STOP);
+  DPRINT("Servo was stopped!!!");
 }
 
 void buoyancyServo_float(){
- buoyancyServo.write(DOWN);
- while (!check_conDownEnder())
- {delay(2000);
-buoyancyServo.write(STOP);}
+  DPRINT("BuoyancyServo floating start!");
+  buoyancyServo.write(DOWN);
+  DPRINT("Waiting for down ender....");
+  while (!check_conDownEnder()){
+    //DPRINT("Waiting for down ender....");
+  }
+  DPRINT("Down Ender was clicked!");
+  buoyancyServo.write(STOP);
+  DPRINT("Servo was stopped!!!");
 }

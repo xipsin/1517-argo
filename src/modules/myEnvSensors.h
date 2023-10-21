@@ -28,6 +28,11 @@ void envSensorsUpdate(envSensorData &data);
 void envSensorData_print(envSensorData &data);
 String envSensorData_toString(envSensorData &data);
 
+void print_dataframe_csvData(envSensorData &data);
+String dataframe_csvData_toString(envSensorData &data);
+
+void print_dataframe_csvHeader();
+String dataframe_csvHeader_toString();
 
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////////   DS12B20   //////////////////////////////////////////
@@ -79,6 +84,6 @@ float get_ph();
 ///////////////////////  TURBIDITY SENSOR  //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-int get_tur();
+int get_turbidity();
 
 #endif
